@@ -36,4 +36,4 @@ Just navigate to an example folder inside the `Kotlin` folder and execute:
 
 #### Android
 
-Open an example folder in the Android Studio, then build or run the app.
+Open an example folder located in the `Android` folder in the Android Studio, then build or run the app.
