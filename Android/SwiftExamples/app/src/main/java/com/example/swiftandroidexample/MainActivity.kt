@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.swiftandroidexample.ui.theme.SwiftAndroidExampleTheme
 
-import swift_java_examples.GreetingService
+import swift4j_examples.GreetingService
 
 class MainActivity : ComponentActivity() {
     private val greetingText = mutableStateOf("Greeting message")
@@ -37,9 +37,6 @@ class MainActivity : ComponentActivity() {
 
         // ----- Calling swift-examples demo
         System.loadLibrary("swift-java-examples")
-
-        val foo = swift_java_examples.Greeting("Foo")
-        greetingText.value = foo.message
 
         val greetings = GreetingService()
         greetings.greetAsync("Android", 2) {

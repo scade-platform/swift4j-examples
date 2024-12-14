@@ -1,7 +1,7 @@
 package org.swift.examples
 
-import swift_java_examples.GreetingService
-import  swift_java_examples.Arrays
+import swift4j_examples.GreetingService
+import  swift4j_examples.Arrays
 
 fun main() {
     System.loadLibrary("swift-java-examples")
@@ -30,6 +30,12 @@ fun arrays() {
     Arrays.printArray(arr)
 
     Arrays.reverseArray(arr).forEach {
+        println(it)
+    }
+
+    Arrays.mapReversed(arr) {
+        it + 1
+    }.forEach {
         println(it)
     }
 }

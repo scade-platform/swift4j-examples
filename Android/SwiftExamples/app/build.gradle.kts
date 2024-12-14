@@ -72,9 +72,10 @@ dependencies {
 
 
 swiftpm {
-    path = file("../../../Packages/swift-java-examples")
-    product = "swift-java-examples"
+    path = file("../../../Packages/swift4j-examples")
+    product = "swift4j-examples"
     javaVersion = 8
+    scdAutoUpdate = true
 }
 
 

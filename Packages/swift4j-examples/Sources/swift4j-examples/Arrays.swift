@@ -1,4 +1,4 @@
-import SwiftJava
+import Swift4j
 
 @jvm class Arrays {
 
@@ -7,6 +7,10 @@ import SwiftJava
     arr.forEach {
       print($0)
     }
+  }
+
+  static func mapReversed(_ arr: [Int], mapping: (Int) -> Int) -> [Int] {
+    return arr.reversed().map(mapping)
   }
 
   static func reverseArray(_ arr: [Int]) -> [Int] {

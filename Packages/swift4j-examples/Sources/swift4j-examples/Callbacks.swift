@@ -1,4 +1,4 @@
-import SwiftJava
+import Swift4j
 
 
 @jvm public class GreetingService {

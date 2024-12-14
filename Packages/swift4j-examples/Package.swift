@@ -5,28 +5,28 @@ import Foundation
 import PackageDescription
 
 let package = Package(
-    name: "swift-java-examples",
+    name: "swift4j-examples",
     platforms: [.macOS(.v13)],
 
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "swift-java-examples",
+            name: "swift4j-examples",
             type: .dynamic,
-            targets: ["swift-java-examples"]),
+            targets: ["swift4j-examples"]),
     ],
 
     dependencies: [
-      .package(path: "../../../"), // Local path to the swift-java package
+      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.0.0")
     ],
 
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "swift-java-examples",
+            name: "swift4j-examples",
             dependencies: [
-              .product(name: "SwiftJava", package: "swift-java")              
+              .product(name: "Swift4j", package: "swift4j")
             ]
         )
     ]
