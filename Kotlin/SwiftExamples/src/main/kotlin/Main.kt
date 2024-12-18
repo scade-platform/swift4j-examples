@@ -4,7 +4,7 @@ import swift4j_examples.GreetingService
 import  swift4j_examples.Arrays
 
 fun main() {
-    System.loadLibrary("swift-java-examples")
+    System.loadLibrary("swift4j-examples")
 
     //callbacks()
     arrays()
@@ -27,13 +27,17 @@ fun callbacks() {
 fun arrays() {
     val arr = longArrayOf(1, 2, 3)
 
-    Arrays.printArray(arr)
+    println("Reverse array")
 
-    Arrays.reverseArray(arr).forEach {
+    val reversed = Arrays.reverseArray(arr)
+
+    reversed.forEach {
         println(it)
     }
 
-    Arrays.mapReversed(arr) {
+    println("Reverse back and increment by 1")
+
+    Arrays.mapReversed(reversed) {
         it + 1
     }.forEach {
         println(it)

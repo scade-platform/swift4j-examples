@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
 
 
         // ----- Calling swift-examples demo
-        System.loadLibrary("swift-java-examples")
+        System.loadLibrary("swift4j-examples")
 
         val greetings = GreetingService()
         greetings.greetAsync("Android", 2) {
