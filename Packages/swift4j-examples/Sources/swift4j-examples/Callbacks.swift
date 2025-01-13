@@ -1,7 +1,7 @@
 import Swift4j
 
-
-@jvm public class GreetingService {
+@jvm
+public class GreetingService {
   func greet(name: String, _ response: (Greeting) -> Void) {
     
     let greeting = Greeting(name: name)
@@ -19,8 +19,8 @@ import Swift4j
 }
 
 
-
-@jvm public class Greeting {
+@jvm
+public class Greeting {
   let name: String
 
   init(name: String) {

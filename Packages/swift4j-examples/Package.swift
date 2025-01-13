@@ -17,7 +17,8 @@ let package = Package(
     ],
 
     dependencies: [
-      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.0.0")
+      .package(url: "https://github.com/scade-platform/swift4j.git", branch: "main")
+      //.package(url: "https://github.com/scade-platform/swift4j.git", from: "1.0.0")
     ],
 
     targets: [

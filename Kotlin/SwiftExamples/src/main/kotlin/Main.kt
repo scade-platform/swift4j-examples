@@ -1,13 +1,15 @@
 package org.swift.examples
 
 import swift4j_examples.GreetingService
-import  swift4j_examples.Arrays
+import swift4j_examples.Arrays
+import swift4j_examples.ParentClass
 
 fun main() {
     System.loadLibrary("swift4j-examples")
 
     //callbacks()
-    arrays()
+    //arrays()
+    nestedClasses()
 }
 
 fun callbacks() {
@@ -42,4 +44,9 @@ fun arrays() {
     }.forEach {
         println(it)
     }
+}
+
+fun nestedClasses() {
+    val nested = ParentClass.NestedClass()
+    print(nested.hello())
 }
