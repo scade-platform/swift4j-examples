@@ -3,13 +3,15 @@ package org.swift.examples
 import swift4j_examples.GreetingService
 import swift4j_examples.Arrays
 import swift4j_examples.ParentClass
+import swift4j_examples.WeatherService
 
 fun main() {
     System.loadLibrary("swift4j-examples")
 
     //callbacks()
     //arrays()
-    nestedClasses()
+    //nestedClasses()
+    weather()
 }
 
 fun callbacks() {
@@ -49,4 +51,13 @@ fun arrays() {
 fun nestedClasses() {
     val nested = ParentClass.NestedClass()
     print(nested.hello())
+}
+
+fun weather() {
+    val weather = WeatherService()
+    weather.currentTemperature(53.86972F, 10.686389F) { temp, units ->
+        println("Current temperature: $temp $units")
+    }
+
+    Thread.sleep(5_000)
 }

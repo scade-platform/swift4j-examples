@@ -1,5 +1,8 @@
 package com.example.swiftandroidexample
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.health.connect.datatypes.units.Temperature
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,12 +16,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import com.example.swiftandroidexample.ui.theme.SwiftAndroidExampleTheme
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
-import swift4j_examples.GreetingService
+import swift4j_examples.WeatherService
 
 class MainActivity : ComponentActivity() {
-    private val greetingText = mutableStateOf("Greeting message")
+    private val temperatureText = mutableStateOf("Current temperature: retrieving...")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,28 +33,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             SwiftAndroidExampleTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                    Temperature(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
         }
 
+        // ----- Calling swift-examples demo -----
 
-        // ----- Calling swift-examples demo
         System.loadLibrary("swift4j-examples")
 
-        val greetings = GreetingService()
-        greetings.greetAsync("Android", 2) {
-            greetingText.value = it.message
+        val weather = WeatherService()
+        weather.currentTemperature(53.86972F, 10.686389F) { temp, units ->
+            temperatureText.value = "Current temperature in Lübeck: $temp $units"
         }
-        // -----------------------------------
+
+        // ----------------------------------------
 
     }
 
     @Composable
-    fun Greeting(modifier: Modifier = Modifier) {
-        val text by greetingText
+    fun Temperature(modifier: Modifier = Modifier) {
+        val text by temperatureText
         Text(
             text = "$text!",
             modifier = modifier
@@ -59,7 +66,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GreetingPreview() {
         SwiftAndroidExampleTheme {
-            Greeting()
+            Temperature()
         }
     }
 }
