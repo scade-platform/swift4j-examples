@@ -5,9 +5,8 @@ import Swift4j
 public class WeatherService {
   // Response: (temp, temp_units)
   func currentTemperature(latitude: Float, longitude: Float, _ response: (Float, String) -> Void) async {
-    let url = URL(string: "http://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m")!
-
     do {
+      let url = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m")!
       let (data, _) = try await URLSession.shared.data(from: url)
 
       guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],

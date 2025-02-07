@@ -2,7 +2,7 @@ plugins {
     java
     application
     kotlin("jvm") version "2.0.10"
-    id("io.scade.gradle.plugins.swiftpm") version "1.0.3"
+    id("io.scade.gradle.plugins.swiftpm") version "1.0.4"
 }
 
 group = "org.swift.examples.kotlin"

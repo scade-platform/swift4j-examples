@@ -4,6 +4,8 @@ import swift4j_examples.GreetingService
 import swift4j_examples.Arrays
 import swift4j_examples.ParentClass
 import swift4j_examples.WeatherService
+import swift4j_examples.Level
+import swift4j_examples.LevelPrinter
 
 fun main() {
     System.loadLibrary("swift4j-examples")
@@ -12,7 +14,9 @@ fun main() {
     //arrays()
     //nestedClasses()
     weather()
+    //enums()
 }
+
 
 fun callbacks() {
     val greetings = GreetingService()
@@ -27,6 +31,7 @@ fun callbacks() {
 
     println("Done !!!")
 }
+
 
 fun arrays() {
     val arr = longArrayOf(1, 2, 3)
@@ -55,9 +60,14 @@ fun nestedClasses() {
 
 fun weather() {
     val weather = WeatherService()
+
     weather.currentTemperature(53.86972F, 10.686389F) { temp, units ->
         println("Current temperature: $temp $units")
     }
 
     Thread.sleep(5_000)
+}
+
+fun enums() {
+    print("Level: ${LevelPrinter.toString(Level.low)}")
 }
