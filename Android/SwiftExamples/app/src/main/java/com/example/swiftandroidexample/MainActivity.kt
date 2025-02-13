@@ -1,8 +1,5 @@
 package com.example.swiftandroidexample
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.health.connect.datatypes.units.Temperature
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,10 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat
 import com.example.swiftandroidexample.ui.theme.SwiftAndroidExampleTheme
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 
 import swift4j_examples.WeatherService
 
