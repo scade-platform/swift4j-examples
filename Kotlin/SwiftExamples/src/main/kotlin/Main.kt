@@ -6,6 +6,7 @@ import swift4j_examples.ParentClass
 import swift4j_examples.WeatherService
 import swift4j_examples.Level
 import swift4j_examples.LevelPrinter
+import swift4j_examples.Player
 
 fun main() {
     System.loadLibrary("swift4j-examples")
@@ -13,8 +14,9 @@ fun main() {
     //callbacks()
     //arrays()
     //nestedClasses()
-    weather()
+    //weather()
     //enums()
+    vars()
 }
 
 
@@ -70,4 +72,11 @@ fun weather() {
 
 fun enums() {
     print("Level: ${LevelPrinter.toString(Level.low)}")
+}
+
+fun vars() {
+    val player = Player("Foo")
+    println(player.name)
+    player.name = "Bar"
+    println(player.name)
 }

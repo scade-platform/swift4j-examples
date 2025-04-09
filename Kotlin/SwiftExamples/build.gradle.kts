@@ -2,13 +2,14 @@ plugins {
     java
     application
     kotlin("jvm") version "2.0.10"
-    id("io.scade.gradle.plugins.swiftpm") version "1.0.4"
+    id("io.scade.gradle.plugins.swiftpm") version "1.1.0"
 }
 
 group = "org.swift.examples.kotlin"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
