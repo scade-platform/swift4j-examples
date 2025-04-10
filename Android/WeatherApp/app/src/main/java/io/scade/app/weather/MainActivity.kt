@@ -22,7 +22,7 @@ import WeatherService.WeatherService
 
 class MainActivity : ComponentActivity() {
     private val temperatureText = mutableStateOf("Current temperature: retrieving...")
-
+    private lateinit var weather: WeatherService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +42,16 @@ class MainActivity : ComponentActivity() {
 
         System.loadLibrary("WeatherService")
 
-        val weather = WeatherService()
+        weather = WeatherService()
 
+        weather.currentTemperature("Berlin") { temp, units ->
+            temperatureText.value = "Current temperature in Berlin: $temp $units"
+        }
+/*
         weather.currentTemperature(52.510885, 13.3989367) { temp, units ->
             temperatureText.value = "Current temperature in Berlin: $temp $units"
         }
-
+*/
         // ----------------------------------------
     }
 

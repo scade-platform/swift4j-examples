@@ -5,7 +5,7 @@ import Swift4j
 class WeatherService {
   // Response: (temp, temp_units)
 
-  func currentTemperature(latitude: Double, longitude: Double, _ response: (Float, String) -> Void) async {
+  private func currentTemperature(latitude: Double, longitude: Double, _ response: (Float, String) -> Void) async {
     do {
       let url = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m")!
       let (data, _) = try await URLSession.shared.data(from: url)
@@ -28,7 +28,7 @@ class WeatherService {
     }
   }
 
-  private func currentTemperature(city: String, _ response: (Float, String) -> Void) async {
+  func currentTemperature(city: String, _ response: (Float, String) -> Void) async {
     do {
       let url = URL(string: "https://nominatim.openstreetmap.org/search?city=\(city)&format=json")!
       let (data, _) = try await URLSession.shared.data(from: url)
