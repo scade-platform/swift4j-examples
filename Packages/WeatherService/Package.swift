@@ -16,10 +16,8 @@ let package = Package(
             targets: ["WeatherService"])
     ],
 
-    dependencies: [
-      //.package(url: "https://github.com/scade-platform/swift4j.git", branch: "main")
-      //.package(url: "https://github.com/scade-platform/swift4j.git", from: "1.0.0")
-      .package(path: "../../../swift4j")
+    dependencies: [      
+      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.0")      
     ],
 
     targets: [
