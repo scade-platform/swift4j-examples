@@ -6,6 +6,7 @@ import swift4j_examples.ParentClass
 import swift4j_examples.Level
 import swift4j_examples.LevelPrinter
 import swift4j_examples.Player
+import swift4j_examples.ThrowingStruct
 import swift4j_examples.ObservableClass
 
 fun main() {
@@ -15,9 +16,9 @@ fun main() {
     //callbacks_async()
     //arrays()
     //nestedClasses()
-    //weather()
     //enums()
     //vars()
+    //exceptions()
 
     observation()
 }
@@ -83,6 +84,13 @@ fun vars() {
     println(player.name)
 }
 
+fun exceptions() {
+    try {
+        println(ThrowingStruct.callAndThrow())
+    } catch (e: Exception) {
+        println(e.message)
+    }
+}
 
 fun observation() {
     val observable = ObservableClass()
@@ -102,3 +110,4 @@ fun observation() {
     observable.count = 1
     println("Count is ${observable.count}")
 }
+
