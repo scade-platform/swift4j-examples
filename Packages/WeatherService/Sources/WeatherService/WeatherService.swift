@@ -3,12 +3,22 @@ import Swift4j
 
 @jvm
 class WeatherService {
-  // Response: (temp, temp_units)
+  // Response: (temp: Float, temp_units: String)
 
   private func currentTemperature(latitude: Double, longitude: Double, _ response: (Float, String) -> Void) async {
+    let url = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m")!
+
     do {
-      let url = URL(string: "https://api.open-meteo.com/v1/forecast?latitude=\(latitude)&longitude=\(longitude)&current=temperature_2m")!
       let (data, _) = try await URLSession.shared.data(from: url)
+
+  #if os(Android)
+      logcat_log("Received data: \(String(decoding: data, as: UTF8.self))")
+      if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+        logcat_log("Encoded keys: \(json.keys.map(\.description).joined(separator: ", "))")
+      } else {
+        logcat_log("Failed to encode JSON")
+      }
+  #endif
 
       guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
             let current = json["current"] as? [String: Any],
@@ -24,7 +34,6 @@ class WeatherService {
 #else
       print(error)
 #endif
-      return
     }
   }
 
@@ -34,14 +43,10 @@ class WeatherService {
       let (data, _) = try await URLSession.shared.data(from: url)
 
       guard let json = try JSONSerialization.jsonObject(with: data) as? [Any],
-            let cityData = json.first as? [String: Any] else {
-        return
-      }
+            let cityData = json.first as? [String: Any] else { return }
 
       guard let lat = cityData["lat"] as? String,
-            let lon = cityData["lon"] as? String else {
-        return
-      }
+            let lon = cityData["lon"] as? String else { return }
 
       if let lat = Double(lat), let lon = Double(lon) {
         await currentTemperature(latitude: lat, longitude: lon, response)
@@ -60,7 +65,6 @@ class WeatherService {
 #else
       print(error)
 #endif
-      return
     }
   }
 }

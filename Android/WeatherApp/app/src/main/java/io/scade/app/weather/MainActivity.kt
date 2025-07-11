@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // ----- Calling swift-examples demo -----
+        // ----- Calling swift code -----
 
         System.loadLibrary("WeatherService")
 
@@ -47,12 +47,6 @@ class MainActivity : ComponentActivity() {
         weather.currentTemperature("Berlin") { temp, units ->
             temperatureText.value = "Current temperature in Berlin: $temp $units"
         }
-/*
-        weather.currentTemperature(52.510885, 13.3989367) { temp, units ->
-            temperatureText.value = "Current temperature in Berlin: $temp $units"
-        }
-*/
-        // ----------------------------------------
     }
 
     @Composable
