@@ -1,3 +1,5 @@
+
+// MainActivity: Entry point for the SimpleDB Android app
 package io.scade.app.simpledb
 
 import android.os.Bundle
@@ -19,16 +21,21 @@ import SimpleDB.Database
 import SimpleDB.Player
 
 
+
+// Main activity that sets up the database and user interface
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Load the native library containing the Swift code and SQLite3
         System.loadLibrary("SimpleDB")
 
+        // Get the path for the database file and create the Swift database instance
         val dbFile = getDatabasePath("players.db")
         val database = Database.create(dbFile.path)
 
+        // Enable edge-to-edge UI and set the main Compose screen
         enableEdgeToEdge()
         setContent {
             PlayerEditorScreen(database)
@@ -39,14 +46,21 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PlayerEditorScreen(database: Database) {
+    // State for player name input
     var name by remember { mutableStateOf("") }
+    // State for player score input
     var score by remember { mutableStateOf("") }
+    // List of players fetched from the database
     val players = remember { mutableStateListOf(*database.fetch()) }
+    // State for currently selected player
     var selectedPlayer by remember { mutableStateOf<Player?>(null) }
 
+    // Main UI layout
     Column(modifier = Modifier.padding(start = 16.dp, top = 48.dp, end = 16.dp, bottom = 16.dp)) {
+        // Title
         Text("Team", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
+        // Input for player name
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -54,6 +68,7 @@ fun PlayerEditorScreen(database: Database) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
+        // Input for player score (digits only)
         OutlinedTextField(
             value = score,
             onValueChange = { score = it.filter { char -> char.isDigit() } },
@@ -61,8 +76,10 @@ fun PlayerEditorScreen(database: Database) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
+        // Row with Add and Delete buttons
         Row {
             Button(onClick = {
+                // Add new player to database
                 if (name.isNotBlank() && score.isNotBlank()) {
                     val newPlayer = Player(name, score.toLong())
                     database.save(newPlayer)
@@ -75,21 +92,27 @@ fun PlayerEditorScreen(database: Database) {
                 Text("Add Player")
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Button(onClick = {
-                selectedPlayer?.let {
-                    database.delete(it)
-                    players.clear()
-                    players.addAll(database.fetch())
-                }
-                selectedPlayer = null
-            }, enabled = selectedPlayer != null) {
+            Button(
+                onClick = {
+                    // Delete selected player from database
+                    selectedPlayer?.let {
+                        database.delete(it)
+                        players.clear()
+                        players.addAll(database.fetch())
+                    }
+                    selectedPlayer = null
+                },
+                enabled = selectedPlayer != null
+            ) {
                 Text("Delete Player")
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+        // List of players
         LazyColumn {
             items(players) { player ->
                 PlayerItem(player, isSelected = player == selectedPlayer) {
+                    // Select or deselect player
                     selectedPlayer = if (selectedPlayer == player) null else player
                 }
             }
@@ -97,6 +120,7 @@ fun PlayerEditorScreen(database: Database) {
     }
 }
 
+// Composable for displaying a single player item
 @Composable
 fun PlayerItem(player: Player, isSelected: Boolean, onClick: () -> Unit) {
     Card(
@@ -109,6 +133,7 @@ fun PlayerItem(player: Player, isSelected: Boolean, onClick: () -> Unit) {
         )
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
+            // Display player name and score
             Text(text = "${player.name} - ${player.score}")
         }
     }
