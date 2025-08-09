@@ -26,8 +26,8 @@ fun main() {
 fun callbacks() {
     val greetings = GreetingService()
 
-    val greeting = greetings.greet("Kotlin") { name: String ->
-        "Hello, $name!"
+    val greeting = greetings.greet("Kotlin") {
+        "Hello, ${it.message}!"
     }
 
     println(greeting)
