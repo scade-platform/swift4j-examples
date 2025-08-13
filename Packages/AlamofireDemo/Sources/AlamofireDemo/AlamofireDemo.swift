@@ -2,6 +2,7 @@ import Foundation
 import Alamofire
 import Swift4j
 
+@jvm
 public struct Post: Sendable {
     public let userId: Int
     public let id: Int
@@ -13,6 +14,7 @@ public struct Post: Sendable {
     }
 }
 
+@jvm
 public final class APIClient {
 
     private let session: Session
@@ -24,7 +26,7 @@ public final class APIClient {
         self.session = Session(configuration: config)
     }
 
-    public func fetchPostAsync(id: Int) async -> Post {
+    public func fetchPost(id: Int) async -> Post {
         await withCheckedContinuation { cont in
             let url = "https://dummyjson.com/posts/\(id)"
             print("Starting request to \(url)")
@@ -41,14 +43,13 @@ public final class APIClient {
                         post = Post(userId: 0, id: id, title: "Error", body: "Failed: \(error.localizedDescription)")
                     }
 
-                    DispatchQueue.main.async {
-                        cont.resume(returning: post)
-                    }
+                    cont.resume(returning: post)
                 }
         }
     }
 }
 
+@jvm
 private struct PostDTO: Decodable {
     let id: Int
     let title: String
