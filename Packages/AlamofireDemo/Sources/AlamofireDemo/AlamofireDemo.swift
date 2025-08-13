@@ -2,32 +2,56 @@ import Foundation
 import Alamofire
 import Swift4j
 
-@jvm
-struct Post: Decodable {
-    let userId: Int
-    let id: Int
-    let title: String
-    let body: String
+public struct Post: Sendable {
+    public let userId: Int
+    public let id: Int
+    public let title: String
+    public let body: String
+
+    public func getSummary() -> String {
+        "Post \(id) by user \(userId): \(title)"
+    }
 }
 
-@jvm
-class APIClient {
-    func fetchPost(id: Int) async throws -> Post {
-        let url = "https://jsonplaceholder.typicode.com/posts/\(id)"
-        print("Starting request to \(url)")
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url)
+public final class APIClient {
+
+    private let session: Session
+
+    public init(timeout: TimeInterval = 15) {
+        let config = URLSessionConfiguration.af.default
+        config.timeoutIntervalForRequest = timeout
+        config.timeoutIntervalForResource = timeout
+        self.session = Session(configuration: config)
+    }
+
+    public func fetchPostAsync(id: Int) async -> Post {
+        await withCheckedContinuation { cont in
+            let url = "https://dummyjson.com/posts/\(id)"
+            print("Starting request to \(url)")
+
+            session.request(url)
                 .validate()
-                .responseDecodable(of: Post.self) { response in
-                    print("Response received")
-                    switch response.result {
-                    case .success(let post):
-                        continuation.resume(returning: post)
+                .responseDecodable(of: PostDTO.self,
+                                   queue: .global(qos: .userInitiated)) { res in
+                    let post: Post
+                    switch res.result {
+                    case .success(let dto):
+                        post = Post(userId: dto.userId, id: dto.id, title: dto.title, body: dto.body)
                     case .failure(let error):
-                        continuation.resume(throwing: error)
+                        post = Post(userId: 0, id: id, title: "Error", body: "Failed: \(error.localizedDescription)")
+                    }
+
+                    DispatchQueue.main.async {
+                        cont.resume(returning: post)
                     }
                 }
         }
     }
+}
+
+private struct PostDTO: Decodable {
+    let id: Int
+    let title: String
+    let body: String
+    let userId: Int
 }
