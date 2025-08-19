@@ -17,7 +17,8 @@ let package = Package(
     ],
 
     dependencies: [      
-      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1")
+      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1"),
+      .package(url: "https://github.com/scade-platform/SwiftyJSON.git", revision: "3594d05")
       //.package(path: "../../../swift4j")
     ],
 
@@ -27,7 +28,8 @@ let package = Package(
         .target(
             name: "WeatherService",
             dependencies: [
-              .product(name: "Swift4j", package: "swift4j")
+              .product(name: "Swift4j", package: "swift4j"),
+              .product(name: "SwiftyJSON", package: "SwiftyJSON")
             ]
         )
     ]

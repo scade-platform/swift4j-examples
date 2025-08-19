@@ -1,5 +1,6 @@
 import Foundation
 import Swift4j
+import SwiftyJSON
 
 /// A service for fetching current weather information using online APIs.
 ///
@@ -74,26 +75,42 @@ class WeatherService {
       // Perform the network request asynchronously
       let (data, _) = try await URLSession.shared.data(from: url)
 
-      // Parse the JSON response to extract latitude and longitude
-      guard let json = try JSONSerialization.jsonObject(with: data) as? [Any],
-            let cityData = json.first as? [String: Any] else { return }
+//      // Parse the JSON response to extract latitude and longitude
+//      guard let json = try JSONSerialization.jsonObject(with: data) as? [Any],
+//            let cityData = json.first as? [String: Any] else { return }
+//
+//      guard let lat = cityData["lat"] as? String,
+//            let lon = cityData["lon"] as? String else { return }
+        
+        // Parse with SwiftyJSON
+              let json = try JSON(data: data)
+              guard let first = json.arrayValue.first else { return }
 
-      guard let lat = cityData["lat"] as? String,
-            let lon = cityData["lon"] as? String else { return }
+              guard let latStr = first["lat"].string,
+                    let lonStr = first["lon"].string,
+                    let lat = Double(latStr),
+                    let lon = Double(lonStr) else {
+        #if os(Android)
+                logcat_log("Cannot parse coordinates: \(first["lat"].rawString() ?? "nil"), \(first["lon"].rawString() ?? "nil")")
+        #else
+                print("Cannot parse coordinates: \(first["lat"].rawString() ?? "nil"), \(first["lon"].rawString() ?? "nil")")
+        #endif
+                return
+              }
 
       // Convert latitude and longitude to Double and fetch temperature
-      if let lat = Double(lat), let lon = Double(lon) {
+      //if let lat = Double(lat), let lon = Double(lon) {
         await currentTemperature(latitude: lat, longitude: lon, response)
 
-      } else {
-#if os(Android)
-        // Log coordinate parsing errors on Android
-        logcat_log("Cannot parse coordinates: \(lat), \(lon)")
-#else
-        // Print coordinate parsing errors on other platforms
-        print("Cannot parse coordinates: \(lat), \(lon)")
-#endif
-      }
+      //} else {
+//#if os(Android)
+//        // Log coordinate parsing errors on Android
+//        logcat_log("Cannot parse coordinates: \(lat), \(lon)")
+//#else
+//        // Print coordinate parsing errors on other platforms
+//        print("Cannot parse coordinates: \(lat), \(lon)")
+//#endif
+//      }
 
     } catch {
 #if os(Android)
