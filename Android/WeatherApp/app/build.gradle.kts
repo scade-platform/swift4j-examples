@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 
-    id("io.scade.gradle.plugins.android.swiftpm") version "1.1.1"
+    id("io.scade.gradle.plugins.android.swiftpm") version "1.2.0"
 }
 
 android {
