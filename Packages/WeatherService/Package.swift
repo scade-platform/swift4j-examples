@@ -28,6 +28,12 @@ let package = Package(
         .target(
             name: "WeatherService",
             dependencies: [
+              .product(name: "Swift4j", package: "swift4j")
+            ]
+        ),
+        .target(
+            name: "WeatherServiceSwiftyJson",
+            dependencies: [
               .product(name: "Swift4j", package: "swift4j"),
               .product(name: "SwiftyJSON", package: "SwiftyJSON")
             ]
