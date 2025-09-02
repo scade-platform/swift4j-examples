@@ -1,5 +1,5 @@
 {
-  "originHash" : "cd5c6b9db6a9d65f06905fb191d867d6ebace000ee56f92d56c04e07e7e5f521",
+  "originHash" : "2a37b3685e2d1d2e6a59f621f035c14d0917f2f0a337818336dde5e2d109e3cc",
   "pins" : [
     {
       "identity" : "swift-argument-parser",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "acdadcbb1d28bf9197a8f5719b7d6856cc0e7e93",
         "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scade-platform/SwiftyJSON.git",
+      "state" : {
+        "branch" : "3594d05",
+        "revision" : "3594d05dfc1e55fe9319e5c08ee9a5b23b81d117"
       }
     }
   ],

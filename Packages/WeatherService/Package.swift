@@ -13,7 +13,7 @@ let package = Package(
         .library(
             name: "WeatherService",
             type: .dynamic,
-            targets: ["WeatherService"])
+            targets: ["WeatherService", "WeatherServiceSwiftyJson"])
     ],
 
     dependencies: [      
