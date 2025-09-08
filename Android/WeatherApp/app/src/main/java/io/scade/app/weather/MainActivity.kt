@@ -19,12 +19,14 @@ import io.scade.app.weather.ui.theme.WeatherAppTheme
 
 import WeatherService.WeatherService
 import WeatherServiceSwiftyJson.WeatherServiceSwiftyJson
+import WeatherServiceAlamofire.WeatherServiceAlamofire
 
 
 class MainActivity : ComponentActivity() {
     private val temperatureText = mutableStateOf("Current temperature: retrieving...")
-    //private lateinit var weather: WeatherService
-    private lateinit var weather: WeatherServiceSwiftyJson
+    private lateinit var weather: WeatherService
+    // private lateinit var weather: WeatherServiceSwiftyJson
+    // private lateinit var weather: WeatherServiceAlamofire
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +46,9 @@ class MainActivity : ComponentActivity() {
 
         System.loadLibrary("WeatherService")
 
-        //weather = WeatherService()
-        weather = WeatherServiceSwiftyJson()
+        weather = WeatherService()
+        // weather = WeatherServiceSwiftyJson()
+        // weather = WeatherServiceAlamofire()
 
         weather.currentTemperature("Berlin") { temp, units ->
             temperatureText.value = "The current temperature in Berlin is: $temp $units"
