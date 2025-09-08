@@ -71,8 +71,11 @@ class WeatherService {
     do {
       // Construct the geocoding API URL for the city
       let url = URL(string: "https://nominatim.openstreetmap.org/search?city=\(city)&format=json")!
+      var request = URLRequest(url: url)
+      request.setValue("SCADE Weather Example", forHTTPHeaderField: "User-Agent")
+
       // Perform the network request asynchronously
-      let (data, _) = try await URLSession.shared.data(from: url)
+      let (data, _) = try await URLSession.shared.data(for: request)
 
       // Parse the JSON response to extract latitude and longitude
       guard let json = try JSONSerialization.jsonObject(with: data) as? [Any],
