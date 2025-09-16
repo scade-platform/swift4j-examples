@@ -6,7 +6,7 @@ import PackageDescription
 
 let package = Package(
     name: "swift4j-examples",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v14)],
 
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -17,10 +17,8 @@ let package = Package(
     ],
 
     dependencies: [
-        .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1")
-      //.package(url: "https://github.com/scade-platform/swift4j.git", branch: "main")
-      //.package(url: "https://github.com/scade-platform/swift4j.git", from: "1.0.0")
-      //.package(path: "../../../swift4j")
+      //.package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1")
+      .package(url: "https://github.com/scade-platform/swift4j.git", branch: "main")            
     ],
 
     targets: [

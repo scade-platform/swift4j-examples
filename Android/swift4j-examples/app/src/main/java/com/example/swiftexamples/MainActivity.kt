@@ -13,31 +13,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.example.swiftexamples.ui.theme.SwiftExamplesTheme
-import swift4j_examples.GreetingService
-import swift4j_examples.Arrays
-import swift4j_examples.ParentClass
-
-import swift4j_examples.Level
-import swift4j_examples.LevelPrinter
-import swift4j_examples.Player
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.*
+import swift4j_examples.*
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         System.loadLibrary("swift4j-examples")
 
         setContent {
@@ -58,10 +47,11 @@ class MainActivity : ComponentActivity() {
     private suspend fun runAllTests(): List<TestResult> {
         return listOf(
             runTest("Callbacks") { callbacks() },
-            //runTest("Arrays") { arrays() },
+            // runTest("Arrays") { arrays() },
             runTest("Nested Classes") { nestedClasses() },
             runTest("Enums") { enums() },
-            runTest("Vars") { vars() }
+            runTest("Vars") { vars() },
+            runTest("Observable") { observation() }
         )
     }
 
@@ -72,7 +62,6 @@ class MainActivity : ComponentActivity() {
         System.setOut(printStream)
 
         var passed = true
-
         try {
             test()
         } catch (e: Exception) {
@@ -84,10 +73,63 @@ class MainActivity : ComponentActivity() {
         System.setOut(originalOut)
 
         val output = outputStream.toString()
-
         return TestResult(name, passed, output)
     }
 
+    private fun callbacks() {
+        val greetings = GreetingService()
+        greetings.greetAsync("Kotlin", 2) {
+            println(it.message)
+        }
+        println("Wait for a greeting...")
+        Thread.sleep(5_000)
+        println("Done !!!")
+    }
+
+    private fun arrays() {
+        val arr = longArrayOf(1, 2, 3)
+        println("Reverse array")
+        val reversed = Arrays.reverseArray(arr)
+        reversed.forEach { println(it) }
+
+        println("Reverse back and increment by 1")
+        Arrays.mapReversed(reversed) { it + 1 }.forEach { println(it) }
+    }
+
+    private fun nestedClasses() {
+        val nested = ParentClass.NestedClass()
+        println(nested.hello())
+    }
+
+    private fun enums() {
+        println("Level: ${LevelPrinter.toString(Level.low)}")
+    }
+
+    private fun vars() {
+        val player = Player("Player1")
+        println(player.name)
+        player.name = "Player2"
+        println(player.name)
+    }
+
+    private suspend fun observation() {
+        val observable = ObservableClass()
+
+        suspend fun observeCount() {
+            val count = withContext(Dispatchers.Main) {
+                observable.getCountWithObservationTracking {
+                    lifecycleScope.launch {
+                        observeCount()
+                    }
+                }
+            }
+            println("Observed count: $count")
+        }
+
+        observeCount()
+        delay(5000)
+        observable.count = 1
+    }
 }
 
 data class TestResult(
@@ -95,7 +137,6 @@ data class TestResult(
     val passed: Boolean,
     val output: String
 )
-
 
 @Composable
 fun TestResultsScreen(results: List<TestResult>, modifier: Modifier = Modifier) {
@@ -111,7 +152,6 @@ fun TestResultsScreen(results: List<TestResult>, modifier: Modifier = Modifier) 
         }
     }
 }
-
 
 @Composable
 fun TestResultRow(result: TestResult) {
@@ -139,57 +179,6 @@ fun TestResultRow(result: TestResult) {
             )
         }
     }
-}
-
-fun callbacks() {
-    val greetings = GreetingService()
-
-    greetings.greetAsync("Kotlin", 2) {
-        println(it.message)
-    }
-
-    println("Wait for a greeting...")
-
-    Thread.sleep(5_000)
-
-    println("Done !!!")
-}
-
-
-fun arrays() {
-    val arr = longArrayOf(1, 2, 3)
-
-    println("Reverse array")
-
-    val reversed = Arrays.reverseArray(arr)
-
-    reversed.forEach {
-        println(it)
-    }
-
-    println("Reverse back and increment by 1")
-
-    Arrays.mapReversed(reversed) {
-        it + 1
-    }.forEach {
-        println(it)
-    }
-}
-
-fun nestedClasses() {
-    val nested = ParentClass.NestedClass()
-    println(nested.hello())
-}
-
-fun enums() {
-    println("Level: ${LevelPrinter.toString(Level.low)}")
-}
-
-fun vars() {
-    val player = Player("Player1")
-    println(player.name)
-    player.name = "Player2"
-    println(player.name)
 }
 
 @Composable

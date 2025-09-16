@@ -13,11 +13,17 @@ let package = Package(
         .library(
             name: "WeatherService",
             type: .dynamic,
-            targets: ["WeatherService"])
+            targets: [
+              "WeatherService",
+              "WeatherServiceSwiftyJson",
+              "WeatherServiceAlamofire"
+            ])
     ],
 
     dependencies: [      
-      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1")
+      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1"),
+      .package(url: "https://github.com/scade-platform/SwiftyJSON.git", revision: "3594d05"),
+      .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.10.2")
       //.package(path: "../../../swift4j")
     ],
 
@@ -28,6 +34,21 @@ let package = Package(
             name: "WeatherService",
             dependencies: [
               .product(name: "Swift4j", package: "swift4j")
+            ]
+        ),
+        .target(
+            name: "WeatherServiceSwiftyJson",
+            dependencies: [
+              .product(name: "Swift4j", package: "swift4j"),
+              .product(name: "SwiftyJSON", package: "SwiftyJSON")
+            ]
+        ),
+        .target(
+            name: "WeatherServiceAlamofire",
+            dependencies: [
+              .product(name: "Swift4j", package: "swift4j"),
+              .product(name: "SwiftyJSON", package: "SwiftyJSON"),
+              .product(name: "Alamofire", package: "Alamofire")
             ]
         )
     ]

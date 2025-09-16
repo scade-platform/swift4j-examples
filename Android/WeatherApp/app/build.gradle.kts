@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 
-    id("io.scade.gradle.plugins.android.swiftpm") version "1.1.1"
+    id("io.scade.gradle.plugins.android.swiftpm") version "1.2.0"
 }
 
 android {
@@ -52,8 +52,6 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

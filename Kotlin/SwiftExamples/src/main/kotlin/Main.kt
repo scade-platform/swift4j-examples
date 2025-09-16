@@ -3,24 +3,37 @@ package org.swift.examples
 import swift4j_examples.GreetingService
 import swift4j_examples.Arrays
 import swift4j_examples.ParentClass
-import swift4j_examples.WeatherService
 import swift4j_examples.Level
 import swift4j_examples.LevelPrinter
 import swift4j_examples.Player
+import swift4j_examples.ThrowingStruct
+import swift4j_examples.ObservableClass
 
 fun main() {
     System.loadLibrary("swift4j-examples")
 
     //callbacks()
+    //callbacks_async()
     //arrays()
     //nestedClasses()
-    //weather()
     //enums()
-    vars()
+    //vars()
+    //exceptions()
+
+    observation()
 }
 
-
 fun callbacks() {
+    val greetings = GreetingService()
+
+    val greeting = greetings.greet("Kotlin") {
+        "Hello, ${it.message}!"
+    }
+
+    println(greeting)
+}
+
+fun callbacks_async() {
     val greetings = GreetingService()
 
     greetings.greetAsync("Kotlin", 2) {
@@ -60,16 +73,6 @@ fun nestedClasses() {
     print(nested.hello())
 }
 
-fun weather() {
-    val weather = WeatherService()
-
-    weather.currentTemperature(53.86972F, 10.686389F) { temp, units ->
-        println("Current temperature: $temp $units")
-    }
-
-    Thread.sleep(5_000)
-}
-
 fun enums() {
     print("Level: ${LevelPrinter.toString(Level.low)}")
 }
@@ -80,3 +83,31 @@ fun vars() {
     player.name = "Bar"
     println(player.name)
 }
+
+fun exceptions() {
+    try {
+        println(ThrowingStruct.callAndThrow())
+    } catch (e: Exception) {
+        println(e.message)
+    }
+}
+
+fun observation() {
+    val observable = ObservableClass()
+
+    fun onCountChange() {
+        println("Count is about to be changed")
+        observable.getCountWithObservationTracking {
+            onCountChange()
+        }
+    }
+
+    val curCount = observable.getCountWithObservationTracking {
+        onCountChange()
+    }
+
+    println("Count is $curCount")
+    observable.count = 1
+    println("Count is ${observable.count}")
+}
+
