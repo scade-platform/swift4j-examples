@@ -1,13 +1,6 @@
 package org.swift.examples
 
-import swift4j_examples.GreetingService
-import swift4j_examples.Arrays
-import swift4j_examples.ParentClass
-import swift4j_examples.Level
-import swift4j_examples.LevelPrinter
-import swift4j_examples.Player
-import swift4j_examples.ThrowingStruct
-import swift4j_examples.ObservableClass
+import swift4j_examples.*
 
 fun main() {
     System.loadLibrary("swift4j-examples")
@@ -19,8 +12,9 @@ fun main() {
     //enums()
     //vars()
     //exceptions()
-
-    observation()
+    //observation()
+    //foundation()
+    reducer()
 }
 
 fun callbacks() {
@@ -78,10 +72,16 @@ fun enums() {
 }
 
 fun vars() {
-    val player = Player("Foo")
-    println(player.name)
-    player.name = "Bar"
-    println(player.name)
+    val vars = Vars(20)
+
+    vars.x += 10
+    println("X: ${vars.x}")
+
+    vars.y += 10
+    println("Y: ${vars.y}")
+
+    println("Z: ${vars.z}")
+    println("W: ${vars.w}")
 }
 
 fun exceptions() {
@@ -109,5 +109,10 @@ fun observation() {
     println("Count is $curCount")
     observable.count = 1
     println("Count is ${observable.count}")
+}
+
+fun foundation() {
+    val date = swift4j_examples.Date_example()
+    println("Now is: ${date.now}")
 }
 

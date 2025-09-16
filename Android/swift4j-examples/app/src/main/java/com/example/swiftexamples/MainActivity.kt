@@ -4,14 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 
 import androidx.lifecycle.lifecycleScope
 
@@ -26,6 +30,9 @@ import swift4j_examples.Level
 import swift4j_examples.LevelPrinter
 import swift4j_examples.ObservableClass
 import swift4j_examples.Player
+
+import swift4j_examples.viewmodel.ObservableClassViewModel
+import swift4j_examples.viewmodel.ObservableClassViewModelFactory
 
 
 class MainActivity : ComponentActivity() {
@@ -52,7 +59,8 @@ class MainActivity : ComponentActivity() {
         //enums()
         //vars()
 
-        observation()
+        //observation()
+        observationWithViewModel()
     }
 
 
@@ -119,12 +127,10 @@ class MainActivity : ComponentActivity() {
     private fun observation() {
         val observable = ObservableClass()
 
-        suspend fun observeCount() {
-            val count = withContext(Dispatchers.Main) {
-                observable.getCountWithObservationTracking {
-                    lifecycleScope.launch {
-                        observeCount()
-                    }
+        fun observeCount() {
+            val count = observable.getCountWithObservationTracking {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    observeCount()
                 }
             }
             outputMessage.value = "Count: $count"
@@ -135,6 +141,34 @@ class MainActivity : ComponentActivity() {
             // Postpone the update for 5 seconds
             delay(5000)
             observable.count = 1
+        }
+    }
+
+    @Composable
+    fun CounterScreen(viewModel: ObservableClassViewModel,
+                      modifier: Modifier = Modifier) {
+        val count by viewModel.count.collectAsState()
+
+        Column(modifier) {
+            Text("Count: $count")
+            Button(onClick = { viewModel.updateCount(count + 1) }) {
+                Text("Increment")
+            }
+        }
+    }
+
+    private fun observationWithViewModel() {
+        val observable = ObservableClass()
+        val viewModel = ViewModelProvider(
+            this, ObservableClassViewModelFactory(observable))[
+            ObservableClassViewModel::class.java]
+
+        setContent {
+            SwiftExamplesTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    CounterScreen(viewModel, Modifier.padding(innerPadding))
+                }
+            }
         }
     }
 }
