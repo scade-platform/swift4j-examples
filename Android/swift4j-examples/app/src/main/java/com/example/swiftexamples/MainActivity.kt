@@ -20,7 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.swiftexamples.ui.theme.SwiftExamplesTheme
 import kotlinx.coroutines.*
-import swift4j_examples.*
+import swift4j_examples.GreetingService
+import swift4j_examples.Arrays
+import swift4j_examples.ParentClass
+
+import swift4j_examples.Level
+import swift4j_examples.LevelPrinter
+import swift4j_examples.ObservableClass
+import swift4j_examples.Player
 
 class MainActivity : ComponentActivity() {
 
