@@ -5,29 +5,39 @@ import swift4j_examples.*
 fun main() {
     System.loadLibrary("swift4j-examples")
 
-    //callbacks()
-    //callbacks_async()
-    //arrays()
-    //nestedClasses()
-    //enums()
-    //vars()
-    //exceptions()
-    //observation()
-    //foundation()
-    reducer()
+    callExample("Callbacks") {  callbacks() }
+    callExample("Callbacks (Async)") {  callbacksAsync() }
+    callExample("Arrays") {  arrays() }
+    callExample("Nested classes") {  nestedClasses() }
+    callExample("Enums") {  enums() }
+    callExample("Vars") {  vars() }
+    callExample("Exceptions") {  exceptions() }
+    callExample("Observation") {  observation() }
+    callExample("Foundation") {  foundation() }
+}
+
+fun callExample(name: String, example: () -> Unit) {
+    val nameLabel = "========== $name =========="
+    val sep = "=".repeat(nameLabel.length)
+
+    println(nameLabel)
+    println(sep)
+
+    example()
+
+    println(sep)
+    println()
 }
 
 fun callbacks() {
     val greetings = GreetingService()
 
-    val greeting = greetings.greet("Kotlin") {
-        "Hello, ${it.message}!"
+    greetings.greet("Kotlin") {
+        println("Hello, ${it.message}!")
     }
-
-    println(greeting)
 }
 
-fun callbacks_async() {
+fun callbacksAsync() {
     val greetings = GreetingService()
 
     greetings.greetAsync("Kotlin", 2) {
@@ -36,7 +46,7 @@ fun callbacks_async() {
 
     println("Wait for a greeting...")
 
-    Thread.sleep(5_000)
+    Thread.sleep(2_000)
 
     println("Done !!!")
 }
