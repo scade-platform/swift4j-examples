@@ -4,11 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -27,9 +32,17 @@ import swift4j_examples.LevelPrinter
 import swift4j_examples.ObservableClass
 import swift4j_examples.Player
 
+import swift4j_examples.viewmodel.ObservableClassViewModel
+import swift4j_examples.viewmodel.ObservableClassViewModelFactory
+import kotlin.getValue
+
 
 class MainActivity : ComponentActivity() {
     private val outputMessage = mutableStateOf("Some text output")
+
+    private val observableVm: ObservableClassViewModel by viewModels {
+        ObservableClassViewModelFactory(ObservableClass())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +51,8 @@ class MainActivity : ComponentActivity() {
             SwiftExamplesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     OutputMessage(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        outputMessage = outputMessage
                     )
                 }
             }
@@ -53,16 +67,6 @@ class MainActivity : ComponentActivity() {
         //vars()
 
         observation()
-    }
-
-
-    @Composable
-    private fun OutputMessage(modifier: Modifier = Modifier) {
-        val output by outputMessage
-        Text(
-            text = output,
-            modifier = modifier
-        )
     }
 
     private fun callbacks() {
@@ -119,12 +123,10 @@ class MainActivity : ComponentActivity() {
     private fun observation() {
         val observable = ObservableClass()
 
-        suspend fun observeCount() {
-            val count = withContext(Dispatchers.Main) {
-                observable.getCountWithObservationTracking {
-                    lifecycleScope.launch {
-                        observeCount()
-                    }
+        fun observeCount() {
+            val count = observable.getCountWithObservationTracking {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    observeCount()
                 }
             }
             outputMessage.value = "Count: $count"
@@ -137,5 +139,15 @@ class MainActivity : ComponentActivity() {
             observable.count = 1
         }
     }
+
 }
 
+
+@Composable
+fun OutputMessage(modifier: Modifier = Modifier, outputMessage: State<String>) {
+    val output by outputMessage
+    Text(
+        text = output,
+        modifier = modifier
+    )
+}

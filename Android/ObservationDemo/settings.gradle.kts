@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SwiftExamples"
+rootProject.name = "ObservationDemo"
 include(":app")
  

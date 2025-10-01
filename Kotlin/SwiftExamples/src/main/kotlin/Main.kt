@@ -1,39 +1,43 @@
 package org.swift.examples
 
-import swift4j_examples.GreetingService
-import swift4j_examples.Arrays
-import swift4j_examples.ParentClass
-import swift4j_examples.Level
-import swift4j_examples.LevelPrinter
-import swift4j_examples.Player
-import swift4j_examples.ThrowingStruct
-import swift4j_examples.ObservableClass
+import swift4j_examples.*
 
 fun main() {
     System.loadLibrary("swift4j-examples")
 
-    //callbacks()
-    //callbacks_async()
-    //arrays()
-    //nestedClasses()
-    //enums()
-    //vars()
-    //exceptions()
+    callExample("Callbacks") {  callbacks() }
+    callExample("Callbacks (Async)") {  callbacksAsync() }
+    callExample("Arrays") {  arrays() }
+    callExample("Nested classes") {  nestedClasses() }
+    callExample("Enums") {  enums() }
+    callExample("Vars") {  vars() }
+    callExample("Exceptions") {  exceptions() }
+    callExample("Observation") {  observation() }
+    callExample("Foundation") {  foundation() }
+}
 
-    observation()
+fun callExample(name: String, example: () -> Unit) {
+    val nameLabel = "========== $name =========="
+    val sep = "=".repeat(nameLabel.length)
+
+    println(nameLabel)
+    println(sep)
+
+    example()
+
+    println(sep)
+    println()
 }
 
 fun callbacks() {
     val greetings = GreetingService()
 
-    val greeting = greetings.greet("Kotlin") {
-        "Hello, ${it.message}!"
+    greetings.greet("Kotlin") {
+        println("Hello, ${it.message}!")
     }
-
-    println(greeting)
 }
 
-fun callbacks_async() {
+fun callbacksAsync() {
     val greetings = GreetingService()
 
     greetings.greetAsync("Kotlin", 2) {
@@ -42,7 +46,7 @@ fun callbacks_async() {
 
     println("Wait for a greeting...")
 
-    Thread.sleep(5_000)
+    Thread.sleep(2_000)
 
     println("Done !!!")
 }
@@ -78,10 +82,16 @@ fun enums() {
 }
 
 fun vars() {
-    val player = Player("Foo")
-    println(player.name)
-    player.name = "Bar"
-    println(player.name)
+    val vars = Vars(20)
+
+    vars.x += 10
+    println("X: ${vars.x}")
+
+    vars.y += 10
+    println("Y: ${vars.y}")
+
+    println("Z: ${vars.z}")
+    println("W: ${vars.w}")
 }
 
 fun exceptions() {
@@ -109,5 +119,10 @@ fun observation() {
     println("Count is $curCount")
     observable.count = 1
     println("Count is ${observable.count}")
+}
+
+fun foundation() {
+    val date = swift4j_examples.Date_example()
+    println("Now is: ${date.now}")
 }
 

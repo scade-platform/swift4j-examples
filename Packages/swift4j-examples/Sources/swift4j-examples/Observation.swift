@@ -3,8 +3,10 @@ import Observation
 import Swift4j
 
 
-@Observable
+
+
 @jvm
+@Observable
 public final class ObservableClass {
   public var count: Int = 0
 }
