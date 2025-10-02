@@ -21,7 +21,7 @@ let package = Package(
     ],
 
     dependencies: [      
-      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.2.1"),
+      .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.3.0"),
       .package(url: "https://github.com/scade-platform/SwiftyJSON.git", revision: "3594d05"),
       .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.10.2")
       //.package(path: "../../../swift4j")

@@ -5,40 +5,34 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
-
-import kotlinx.coroutines.*
-
 import com.example.swiftexamples.ui.theme.SwiftExamplesTheme
-
+import kotlinx.coroutines.*
 import swift4j_examples.GreetingService
 import swift4j_examples.Arrays
 import swift4j_examples.ParentClass
+
 import swift4j_examples.Level
 import swift4j_examples.LevelPrinter
 import swift4j_examples.ObservableClass
 import swift4j_examples.Player
-
 import swift4j_examples.viewmodel.ObservableClassViewModel
 import swift4j_examples.viewmodel.ObservableClassViewModelFactory
-import kotlin.getValue
-
 
 class MainActivity : ComponentActivity() {
-    private val outputMessage = mutableStateOf("Some text output")
 
     private val observableVm: ObservableClassViewModel by viewModels {
         ObservableClassViewModelFactory(ObservableClass())
@@ -47,61 +41,78 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        System.loadLibrary("swift4j-examples")
+
         setContent {
             SwiftExamplesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    OutputMessage(
-                        modifier = Modifier.padding(innerPadding),
-                        outputMessage = outputMessage
-                    )
+                var results by remember { mutableStateOf<List<TestResult>>(emptyList()) }
+
+                LaunchedEffect(Unit) {
+                    results = runAllTests()
+                }
+
+                Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
+                    Column(modifier = Modifier.padding(padding)) {
+                        TestResultsScreen(results = results)
+                    }
                 }
             }
         }
+    }
 
-        System.loadLibrary("swift4j-examples")
+    private suspend fun runAllTests(): List<TestResult> {
+        return listOf(
+            runTest("Callbacks") { callbacks() },
+            runTest("Arrays") { arrays() },
+            runTest("Nested Classes") { nestedClasses() },
+            runTest("Enums") { enums() },
+            runTest("Vars") { vars() },
+            runTest("Observable") {
+                val values = observation()
+                println("Observed sequence: $values")
+            }
+        )
+    }
 
-        //callbacks()
-        //arrays()
-        //nestedClasses()
-        //enums()
-        //vars()
+    private suspend fun runTest(name: String, test: suspend () -> Unit): TestResult {
+        val originalOut = System.out
+        val outputStream = java.io.ByteArrayOutputStream()
+        val printStream = java.io.PrintStream(outputStream)
+        System.setOut(printStream)
 
-        observation()
+        var passed = true
+        try {
+            test()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            passed = false
+        }
+
+        System.out.flush()
+        System.setOut(originalOut)
+
+        val output = outputStream.toString()
+        return TestResult(name, passed, output)
     }
 
     private fun callbacks() {
         val greetings = GreetingService()
-
         greetings.greetAsync("Kotlin", 2) {
             println(it.message)
         }
-
         println("Wait for a greeting...")
-
         Thread.sleep(5_000)
-
         println("Done !!!")
     }
 
-
     private fun arrays() {
         val arr = longArrayOf(1, 2, 3)
-
         println("Reverse array")
-
         val reversed = Arrays.reverseArray(arr)
-
-        reversed.forEach {
-            println(it)
-        }
+        reversed.forEach { println(it) }
 
         println("Reverse back and increment by 1")
-
-        Arrays.mapReversed(reversed) {
-            it + 1
-        }.forEach {
-            println(it)
-        }
+        Arrays.mapReversed(reversed) { it + 1 }.forEach { println(it) }
     }
 
     private fun nestedClasses() {
@@ -114,14 +125,16 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun vars() {
-        val player = Player("Foo")
+        val player = Player("Player1")
         println(player.name)
-        player.name = "Bar"
+        player.name = "Player2"
         println(player.name)
     }
 
-    private fun observation() {
+    private suspend fun observation(): List<Long> {
         val observable = ObservableClass()
+        val values = mutableListOf<Long>()
+        val completable = CompletableDeferred<Unit>()
 
         fun observeCount() {
             val count = observable.getCountWithObservationTracking {
@@ -129,19 +142,75 @@ class MainActivity : ComponentActivity() {
                     observeCount()
                 }
             }
-            outputMessage.value = "Count: $count"
+            values.add(count)
+            println("Observed count: $count")
+
+            if (count == 3L) {
+                completable.complete(Unit)
+            }
         }
 
-        lifecycleScope.launch {
-            observeCount()
-            // Postpone the update for 5 seconds
-            delay(5000)
-            observable.count = 1
-        }
+        observeCount()
+
+        observable.count = 1
+        delay(200)
+        observable.count = 2
+        delay(200)
+        observable.count = 3
+
+        completable.await()
+        return values
     }
-
 }
 
+data class TestResult(
+    val name: String,
+    val passed: Boolean,
+    val output: String
+)
+
+@Composable
+fun TestResultsScreen(results: List<TestResult>, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text("Test Results", style = MaterialTheme.typography.headlineSmall)
+        for (result in results) {
+            TestResultRow(result)
+        }
+    }
+}
+
+@Composable
+fun TestResultRow(result: TestResult) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                if (result.passed) "✅" else "❌",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                "${result.name}: ${if (result.passed) "Test Passed" else "Test Failed"}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+
+        if (result.output.isNotBlank()) {
+            Text(
+                result.output,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 24.dp, top = 4.dp)
+            )
+        }
+    }
+}
 
 @Composable
 fun OutputMessage(modifier: Modifier = Modifier, outputMessage: State<String>) {
@@ -150,4 +219,20 @@ fun OutputMessage(modifier: Modifier = Modifier, outputMessage: State<String>) {
         text = output,
         modifier = modifier
     )
+}
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    SwiftExamplesTheme {
+        Greeting("Android")
+    }
 }

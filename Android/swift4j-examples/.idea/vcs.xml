@@ -3,5 +3,8 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../.." vcs="Git" />
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/build/swiftpm/swift4j-examples/checkouts/swift-argument-parser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/build/swiftpm/swift4j-examples/checkouts/swift-syntax" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/build/swiftpm/swift4j-examples/checkouts/swift4j" vcs="Git" />
   </component>
 </project>
