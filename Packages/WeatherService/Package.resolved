@@ -1,5 +1,5 @@
 {
-  "originHash" : "859b0e666c5594c6f24cedd167b81baa2301907fd0eac8aaf189097a5f31d969",
+  "originHash" : "9f3929f7d57750846edaa29508c645345ae0b4f686643f21d0f47bcf4fe26923",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scade-platform/swift4j.git",
       "state" : {
-        "revision" : "acdadcbb1d28bf9197a8f5719b7d6856cc0e7e93",
-        "version" : "1.2.1"
+        "revision" : "0759f8570cf2e0782822f517513952ad25943e93",
+        "version" : "1.3.0"
       }
     },
     {
