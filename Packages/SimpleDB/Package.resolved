@@ -1,6 +1,15 @@
 {
-  "originHash" : "617b3e26cac769dd3296e6358680ffb81c2dbf45be0b228e867a2df426538879",
+  "originHash" : "de6fa47ade25b1f2a8254163d0013ec63204cd0d50049c0fe0b3472f7af90692",
   "pins" : [
+    {
+      "identity" : "grdb.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scade-platform/GRDB.swift.git",
+      "state" : {
+        "branch" : "android_support",
+        "revision" : "ca37d76cfb780c5126f92f80bee7cc80db5cac68"
+      }
+    },
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
