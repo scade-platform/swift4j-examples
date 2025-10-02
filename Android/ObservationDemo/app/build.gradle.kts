@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.swiftexamples"
+    namespace = "com.example.observation"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.swiftexamples"
+        applicationId = "com.example.observation"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -61,8 +61,8 @@ dependencies {
 }
 
 swiftpm {
-    path = file("../../../Packages/swift4j-examples")
-    product = "swift4j-examples"
+    path = file("../../../Packages/ObservationDemo")
+    product = "ObservationDemo"
     javaVersion = 8
     scdAutoUpdate = true
 }

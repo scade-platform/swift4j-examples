@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +29,14 @@ import swift4j_examples.Level
 import swift4j_examples.LevelPrinter
 import swift4j_examples.ObservableClass
 import swift4j_examples.Player
+import swift4j_examples.viewmodel.ObservableClassViewModel
+import swift4j_examples.viewmodel.ObservableClassViewModelFactory
 
 class MainActivity : ComponentActivity() {
+
+    private val observableVm: ObservableClassViewModel by viewModels {
+        ObservableClassViewModelFactory(ObservableClass())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +52,9 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
-                    TestResultsScreen(results = results, modifier = Modifier.padding(padding))
+                    Column(modifier = Modifier.padding(padding)) {
+                        TestResultsScreen(results = results)
+                    }
                 }
             }
         }
@@ -54,11 +63,14 @@ class MainActivity : ComponentActivity() {
     private suspend fun runAllTests(): List<TestResult> {
         return listOf(
             runTest("Callbacks") { callbacks() },
-            // runTest("Arrays") { arrays() },
+            runTest("Arrays") { arrays() },
             runTest("Nested Classes") { nestedClasses() },
             runTest("Enums") { enums() },
             runTest("Vars") { vars() },
-            runTest("Observable") { observation() }
+            runTest("Observable") {
+                val values = observation()
+                println("Observed sequence: $values")
+            }
         )
     }
 
@@ -119,23 +131,35 @@ class MainActivity : ComponentActivity() {
         println(player.name)
     }
 
-    private suspend fun observation() {
+    private suspend fun observation(): List<Long> {
         val observable = ObservableClass()
+        val values = mutableListOf<Long>()
+        val completable = CompletableDeferred<Unit>()
 
-        suspend fun observeCount() {
-            val count = withContext(Dispatchers.Main) {
-                observable.getCountWithObservationTracking {
-                    lifecycleScope.launch {
-                        observeCount()
-                    }
+        fun observeCount() {
+            val count = observable.getCountWithObservationTracking {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    observeCount()
                 }
             }
+            values.add(count)
             println("Observed count: $count")
+
+            if (count == 3L) {
+                completable.complete(Unit)
+            }
         }
 
         observeCount()
-        delay(5000)
+
         observable.count = 1
+        delay(200)
+        observable.count = 2
+        delay(200)
+        observable.count = 3
+
+        completable.await()
+        return values
     }
 }
 
@@ -186,6 +210,15 @@ fun TestResultRow(result: TestResult) {
             )
         }
     }
+}
+
+@Composable
+fun OutputMessage(modifier: Modifier = Modifier, outputMessage: State<String>) {
+    val output by outputMessage
+    Text(
+        text = output,
+        modifier = modifier
+    )
 }
 
 @Composable

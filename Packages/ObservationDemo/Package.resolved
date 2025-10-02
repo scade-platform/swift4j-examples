@@ -1,5 +1,5 @@
 {
-  "originHash" : "dddfb22885baf9780a623228ba87c4edca1a213d42db07052b06b156f57793b2",
+  "originHash" : "aa417e94bd7cdf625d1da9e95cab10598aab17d82865990e66cd28532bfc81b6",
   "pins" : [
     {
       "identity" : "swift-argument-parser",
@@ -17,15 +17,6 @@
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
-      }
-    },
-    {
-      "identity" : "swift4j",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/scade-platform/swift4j.git",
-      "state" : {
-        "revision" : "c302c5565da4942fd8a03a3209b9ed2af57e6821",
-        "version" : "1.3.0"
       }
     }
   ],
