@@ -1,14 +1,19 @@
+import io.scade.gradle.plugins.spm.TargetPlatform
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    id("io.scade.gradle.plugins.android.swiftpm") version "1.3.0"
+    id("io.scade.gradle.plugins.android.swiftpm") version "1.4.0"
 }
 
 android {
     namespace = "com.example.swiftexamples"
     compileSdk = 35
+
+    // If you want to use a specific NDK version, uncomment the line below and specify the version.
+    //ndkVersion = "29.0.14206865"
 
     defaultConfig {
         applicationId = "com.example.swiftexamples"
@@ -65,4 +70,8 @@ swiftpm {
     product = "swift4j-examples"
     javaVersion = 8
     scdAutoUpdate = true
+
+    // If you want to only build for specific architectures, uncomment the line below.
+    // By default, arm64-v8a and x86_64 architectures are built.
+    //platforms = listOf(TargetPlatform.Android(archs = listOf("arm64-v8a")))
 }
