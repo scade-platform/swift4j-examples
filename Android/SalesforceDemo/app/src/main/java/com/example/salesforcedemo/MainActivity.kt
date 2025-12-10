@@ -45,13 +45,11 @@ fun AccountsScreen(modifier: Modifier = Modifier) {
 }
 
 suspend fun loadFromSwift(): String {
-    return withContext(Dispatchers.IO) {
-        try {
-            val bridge = SalesforceBridge()
-            bridge.loadAccountsJson()
-        } catch (e: Exception) {
-            "Error: ${e.message}"
-        }
+    return try {
+        val bridge = SalesforceBridge()
+        bridge.loadAccountsJson()
+    } catch (e: Exception) {
+        "Error: ${e.message}"
     }
 }
 
