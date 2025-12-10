@@ -1,5 +1,6 @@
 import Foundation
 import Swift4j
+import Dispatch
 
 // MARK: - Models
 
@@ -27,27 +28,61 @@ public struct AccountsQueryResponse: Codable {
     public let records: [Account]
 }
 
-// MARK: - Salesforce API Client
+// MARK: - Internal HTTP result holder
 
-@jvm
+final class RequestResult: @unchecked Sendable {
+    var data: Data?
+    var response: URLResponse?
+    var error: Error?
+}
+
+// MARK: - Salesforce API Client (pure Swift, no @jvm)
+
 public final class SalesforceAPI {
     
     private let clientId     = "client_id"
     private let clientSecret = "client_secret"
+    
     private let baseDomain   = "orgfarm-c4ae2aaf32-dev-ed.develop.my.salesforce.com"
     private let apiVersion   = "v65.0"
     
     public init() {}
     
-    public func loadAccounts() async throws -> [Account] {
-        let token = try await fetchAccessToken()
-        let response = try await fetchAccounts(accessToken: token)
+    public func loadAccounts() throws -> [Account] {
+        let token = try fetchAccessToken()
+        let response = try fetchAccounts(accessToken: token)
         return response.records
+    }
+    
+    // MARK: - HTTP Helper
+    
+    private func performRequest(_ request: URLRequest) throws -> (Data, URLResponse) {
+        let semaphore = DispatchSemaphore(value: 0)
+        let result = RequestResult()
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            result.data = data
+            result.response = response
+            result.error = error
+            semaphore.signal()
+        }.resume()
+        
+        semaphore.wait()
+        
+        if let error = result.error {
+            throw error
+        }
+        
+        guard let data = result.data, let response = result.response else {
+            throw URLError(.badServerResponse)
+        }
+        
+        return (data, response)
     }
     
     // MARK: - Token
     
-    private func fetchAccessToken() async throws -> String {
+    private func fetchAccessToken() throws -> String {
         var components = URLComponents()
         components.scheme = "https"
         components.host = baseDomain
@@ -70,14 +105,16 @@ public final class SalesforceAPI {
         request.httpBody = body.percentEncodedQuery?.data(using: .utf8)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try performRequest(request)
         let http = response as! HTTPURLResponse
         
         guard 200..<300 ~= http.statusCode else {
             let text = String(data: data, encoding: .utf8) ?? ""
-            throw NSError(domain: "TokenError", code: http.statusCode, userInfo: [
-                NSLocalizedDescriptionKey: text
-            ])
+            throw NSError(
+                domain: "TokenError",
+                code: http.statusCode,
+                userInfo: [NSLocalizedDescriptionKey: text]
+            )
         }
         
         return try JSONDecoder().decode(TokenResponse.self, from: data).access_token
@@ -85,7 +122,7 @@ public final class SalesforceAPI {
     
     // MARK: - Accounts
     
-    private func fetchAccounts(accessToken: String) async throws -> AccountsQueryResponse {
+    private func fetchAccounts(accessToken: String) throws -> AccountsQueryResponse {
         var components = URLComponents()
         components.scheme = "https"
         components.host = baseDomain
@@ -102,16 +139,38 @@ public final class SalesforceAPI {
         request.httpMethod = "GET"
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try performRequest(request)
         let http = response as! HTTPURLResponse
         
         guard 200..<300 ~= http.statusCode else {
             let text = String(data: data, encoding: .utf8) ?? ""
-            throw NSError(domain: "AccountsError", code: http.statusCode, userInfo: [
-                NSLocalizedDescriptionKey: text
-            ])
+            throw NSError(
+                domain: "AccountsError",
+                code: http.statusCode,
+                userInfo: [NSLocalizedDescriptionKey: text]
+            )
         }
         
         return try JSONDecoder().decode(AccountsQueryResponse.self, from: data)
+    }
+}
+
+// MARK: - JVM Bridge
+
+@jvm
+public final class SalesforceBridge {
+    
+    public init() {}
+    
+    public func loadAccountsJson() -> String {
+        let api = SalesforceAPI()
+        
+        do {
+            let accounts = try api.loadAccounts()
+            let data = try JSONEncoder().encode(accounts)
+            return String(data: data, encoding: .utf8) ?? "[]"
+        } catch {
+            return "[]"
+        }
     }
 }
