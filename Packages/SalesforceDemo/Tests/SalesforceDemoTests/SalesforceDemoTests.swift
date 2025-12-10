@@ -8,7 +8,7 @@ final class SalesforceDemoTests: XCTestCase {
         
         let accounts = try await api.loadAccounts()
         
-        print("✅ Получено аккаунтов: \(accounts.count)")
+        print("✅ Accounts received: \(accounts.count)")
         
         for acc in accounts {
             print("- \(acc.name)")

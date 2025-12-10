@@ -1,4 +1,5 @@
 import Foundation
+import Swift4j
 
 // MARK: - Models
 
@@ -28,12 +29,12 @@ public struct AccountsQueryResponse: Codable {
 
 // MARK: - Salesforce API Client
 
+@jvm
 public final class SalesforceAPI {
     
     // 🔴 подставь сюда СВОИ ключи
     private let clientId     = "client_id"
     private let clientSecret = "client_secret"
-    
     private let baseDomain   = "orgfarm-c4ae2aaf32-dev-ed.develop.my.salesforce.com"
     private let apiVersion   = "v65.0"
     
