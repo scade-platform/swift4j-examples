@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
 fun AccountsScreen(modifier: Modifier = Modifier) {
     var text by remember { mutableStateOf("Loading...") }
 
+    System.loadLibrary("SalesforceDemo")
     val bridge = SalesforceBridge()
     text = bridge.loadAccountsJson()
 
