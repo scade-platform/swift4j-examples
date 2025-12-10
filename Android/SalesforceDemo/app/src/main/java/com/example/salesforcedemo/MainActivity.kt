@@ -13,12 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.salesforcedemo.ui.theme.SalesforceDemoTheme
 import SalesforceDemo.SalesforceBridge
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        System.loadLibrary("SalesforceDemo")
+
         enableEdgeToEdge()
         setContent {
             SalesforceDemoTheme {
@@ -32,11 +33,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AccountsScreen(modifier: Modifier = Modifier) {
-    var text by remember { mutableStateOf("Loading...") }
+    var text by remember { mutableStateOf("Loading..." ) }
 
-    System.loadLibrary("SalesforceDemo")
-    val bridge = SalesforceBridge()
-    text = bridge.loadAccountsJson()
+    LaunchedEffect(Unit) {
+        try {
+            val bridge = SalesforceBridge()
+            val result = bridge.loadAccountsJson()
+            text = result
+        } catch (e: Exception) {
+            text = "Error: ${e.message}"
+        }
+    }
 
     Text(
         text = text,
@@ -46,7 +53,7 @@ fun AccountsScreen(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun AccountsScreenPreview() {
     SalesforceDemoTheme {
         AccountsScreen()
     }
