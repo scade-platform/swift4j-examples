@@ -32,7 +32,6 @@ public struct AccountsQueryResponse: Codable {
 @jvm
 public final class SalesforceAPI {
     
-    // 🔴 подставь сюда СВОИ ключи
     private let clientId     = "client_id"
     private let clientSecret = "client_secret"
     private let baseDomain   = "orgfarm-c4ae2aaf32-dev-ed.develop.my.salesforce.com"
