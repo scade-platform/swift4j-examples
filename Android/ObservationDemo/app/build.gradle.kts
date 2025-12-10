@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
-    id("io.scade.gradle.plugins.android.swiftpm") version "1.4.2"
+    id("io.scade.gradle.plugins.android.swiftpm") version "latest.release"
 }
 
 android {
