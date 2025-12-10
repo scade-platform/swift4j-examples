@@ -34,23 +34,13 @@ class MainActivity : ComponentActivity() {
 fun AccountsScreen(modifier: Modifier = Modifier) {
     var text by remember { mutableStateOf("Loading...") }
 
-    LaunchedEffect(Unit) {
-        text = loadFromSwift()
-    }
+    val bridge = SalesforceBridge()
+    text = bridge.loadAccountsJson()
 
     Text(
         text = text,
         modifier = modifier
     )
-}
-
-suspend fun loadFromSwift(): String {
-    return try {
-        val bridge = SalesforceBridge()
-        bridge.loadAccountsJson()
-    } catch (e: Exception) {
-        "Error: ${e.message}"
-    }
 }
 
 @Preview(showBackground = true)
