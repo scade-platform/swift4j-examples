@@ -6,14 +6,20 @@ struct Vars {
 
   var x: Int
 
-  private var _y = 0
-  var y: Int {
-    get { _y }
-    set { _y = newValue }
+  var y: Int { 0 }
+
+  var z: Int { get { 0 } }
+
+  private var _u = 0
+  var u: Int {
+    get { _u }
+    set { _u = newValue }
   }
 
-  var z: Int { 0 }
-  var w: Int { get { 0 } }
+  private(set) var v: Int {
+    get { _u }
+    set { _u = newValue }
+  }
 }
 
 

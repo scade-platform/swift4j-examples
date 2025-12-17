@@ -9,4 +9,8 @@ import Swift4j
 @Observable
 public final class ObservableClass {
   public var count: Int = 0
+
+  public var title: String {
+    return "Count: \(count)"
+  }
 }

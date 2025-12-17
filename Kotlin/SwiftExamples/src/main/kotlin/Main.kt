@@ -85,13 +85,15 @@ fun vars() {
     val vars = Vars(20)
 
     vars.x += 10
+
     println("X: ${vars.x}")
-
-    vars.y += 10
     println("Y: ${vars.y}")
-
     println("Z: ${vars.z}")
-    println("W: ${vars.w}")
+
+    vars.u += 10
+
+    println("U: ${vars.u}")
+    println("U: ${vars.v}")
 }
 
 fun exceptions() {
@@ -119,6 +121,20 @@ fun observation() {
     println("Count is $curCount")
     observable.count = 1
     println("Count is ${observable.count}")
+
+    fun onTitleChange() {
+        println("Titile is about to be changed")
+        observable.getTitleWithObservationTracking {
+            onTitleChange()
+        }
+    }
+
+    val curTitle = observable.getTitleWithObservationTracking {
+        onTitleChange()
+    }
+    println("Title is: $curTitle")
+    observable.count = 2
+    println("Title is: ${observable.title}")
 }
 
 fun foundation() {
