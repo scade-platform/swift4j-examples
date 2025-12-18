@@ -1,6 +1,7 @@
 import Foundation
 import Swift4j
 import Dispatch
+import os
 
 // MARK: - Models
 
@@ -60,6 +61,8 @@ public final class SalesforceAPI {
         let semaphore = DispatchSemaphore(value: 0)
         let result = RequestResult()
         
+        os_log("performRequest start");
+
         URLSession.shared.dataTask(with: request) { data, response, error in
             result.data = data
             result.response = response
@@ -70,12 +73,18 @@ public final class SalesforceAPI {
         semaphore.wait()
         
         if let error = result.error {
+            os_log("performRequest request completed with error: \(error)");
             throw error
         }
-        
+
+        os_log("performRequest request completed");
+
         guard let data = result.data, let response = result.response else {
+            os_log("performRequest completed with no data");
             throw URLError(.badServerResponse)
         }
+
+        os_log("performRequest received data: \(data)");
         
         return (data, response)
     }
@@ -101,10 +110,10 @@ public final class SalesforceAPI {
             .init(name: "client_id", value: clientId),
             .init(name: "client_secret", value: clientSecret)
         ]
-        
+
         request.httpBody = body.percentEncodedQuery?.data(using: .utf8)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        
+
         let (data, response) = try performRequest(request)
         let http = response as! HTTPURLResponse
         
@@ -164,12 +173,15 @@ public final class SalesforceBridge {
     
     public func loadAccountsJson() -> String {
         let api = SalesforceAPI()
+        os_log("loadAccountsJson begin")
         
         do {
             let accounts = try api.loadAccounts()
+            os_log("loadAccountsJson accounts: \(accounts.count)")
             let data = try JSONEncoder().encode(accounts)
             return String(data: data, encoding: .utf8) ?? "[]"
         } catch {
+            os_log("ERROR :\(error)")
             return "[]"
         }
     }
