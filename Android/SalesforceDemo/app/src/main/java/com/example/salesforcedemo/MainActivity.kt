@@ -38,8 +38,9 @@ fun AccountsScreen(modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
         try {
             val bridge = SalesforceBridge()
-            val result = bridge.loadAccountsJson()
-            text = result
+            val result = bridge.loadAccounts() { accounts ->
+                text = accounts.joinToString("\n") { it.name }
+            }
         } catch (e: Exception) {
             text = "Error: ${e.message}"
         }
