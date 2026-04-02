@@ -3,15 +3,6 @@ import Swift4j
 @jvm
 class GreetingService {
   func greet(name: String, _ response: (Greeting) -> Void) {
-
-    let greeting = Greeting(name: name)
-    response(greeting)
-
-  }
-
-  func greetAsync(name: String, delayInSeconds: Int, _ response: (Greeting) -> Void) async {
-    try? await Task.sleep(nanoseconds: UInt64(delayInSeconds*1_000_000_000))
-
     let greeting = Greeting(name: name)
     response(greeting)
   }

@@ -1,19 +1,21 @@
-package org.swift.examples
-
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.runBlocking
 import swift4j_examples.*
+
 
 fun main() {
     System.loadLibrary("swift4j-examples")
 
     callExample("Callbacks") {  callbacks() }
-    callExample("Callbacks (Async)") {  callbacksAsync() }
     callExample("Arrays") {  arrays() }
     callExample("Nested classes") {  nestedClasses() }
     callExample("Enums") {  enums() }
+    callExample("Enums with associated values") {  enumsWithAssociatedVals() }
     callExample("Vars") {  vars() }
     callExample("Exceptions") {  exceptions() }
     callExample("Observation") {  observation() }
     callExample("Foundation") {  foundation() }
+    callExample("Async") {  async() }
 }
 
 fun callExample(name: String, example: () -> Unit) {
@@ -35,20 +37,6 @@ fun callbacks() {
     greetings.greet("Kotlin") {
         println("Hello, ${it.message}!")
     }
-}
-
-fun callbacksAsync() {
-    val greetings = GreetingService()
-
-    greetings.greetAsync("Kotlin", 2) {
-        println(it.message)
-    }
-
-    println("Wait for a greeting...")
-
-    Thread.sleep(2_000)
-
-    println("Done !!!")
 }
 
 
@@ -81,6 +69,16 @@ fun enums() {
     print("Level: ${LevelPrinter.toString(Level.low)}")
 }
 
+fun enumsWithAssociatedVals() {
+    val msg = when (val res = Network.requestError()) {
+        is NetworkResult.success -> "Success: "
+        is NetworkResult.error -> "Error(${res.code}): ${res.message}"
+        NetworkResult.loading -> "Loading"
+    }
+
+    println(msg)
+}
+
 fun vars() {
     val vars = Vars(20)
 
@@ -98,7 +96,7 @@ fun vars() {
 
 fun exceptions() {
     try {
-        println(ThrowingStruct.callAndThrow())
+        ThrowingStruct.callAndThrow()
     } catch (e: Exception) {
         println(e.message)
     }
@@ -138,7 +136,21 @@ fun observation() {
 }
 
 fun foundation() {
+    println("---------- Date -----------")
     val date = swift4j_examples.Date_example()
     println("Now is: ${date.now}")
+
+    println("\n---------- Result ---------")
+    val res = swift4j_examples.Result_example()
+    val resVal = res.doWithSuccess().getOrElse { it.toString() }
+    println("Result is: $resVal")
 }
 
+
+fun async() {
+    val async = Async()
+
+    runBlocking {
+        async.exec().await()
+    }
+}

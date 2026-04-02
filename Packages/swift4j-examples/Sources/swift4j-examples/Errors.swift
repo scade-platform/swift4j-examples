@@ -12,13 +12,11 @@ enum MyError: LocalizedError {
   }
 }
 
+
 @jvm
 struct ThrowingStruct {
-  static func callAndThrow(_ arg: Int) throws {
-    throw MyError.message("An error occurred!")
-  }
+  static func callAndThrow() throws {
 
-  static func callAndThrow() throws{
     throw MyError.message("An error occurred!")
   }
 }

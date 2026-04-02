@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,17 +22,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.swiftexamples.ui.theme.SwiftExamplesTheme
-import kotlinx.coroutines.*
-import swift4j_examples.GreetingService
-import swift4j_examples.Arrays
-import swift4j_examples.ParentClass
 
-import swift4j_examples.Level
-import swift4j_examples.LevelPrinter
-import swift4j_examples.ObservableClass
-import swift4j_examples.Player
-import swift4j_examples.viewmodel.ObservableClassViewModel
-import swift4j_examples.viewmodel.ObservableClassViewModelFactory
+import kotlinx.coroutines.*
+import kotlinx.coroutines.future.await
+
+import swift4j_examples.*
+import swift4j_examples.viewmodel.*
+
 
 class MainActivity : ComponentActivity() {
 
@@ -66,11 +64,15 @@ class MainActivity : ComponentActivity() {
             runTest("Arrays") { arrays() },
             runTest("Nested Classes") { nestedClasses() },
             runTest("Enums") { enums() },
+            runTest("Enums with associated values") {  enumsWithAssociatedVals() },
             runTest("Vars") { vars() },
+            runTest("Exceptions") {  exceptions() },
             runTest("Observable") {
                 val values = observation()
                 println("Observed sequence: $values")
-            }
+            },
+            runTest("Foundation") {  foundation() },
+            runTest("Async") {  async() }
         )
     }
 
@@ -95,14 +97,12 @@ class MainActivity : ComponentActivity() {
         return TestResult(name, passed, output)
     }
 
-    private fun callbacks() {
+    fun callbacks() {
         val greetings = GreetingService()
-        greetings.greetAsync("Kotlin", 2) {
-            println(it.message)
+
+        greetings.greet("Kotlin") {
+            println("Hello, ${it.message}!")
         }
-        println("Wait for a greeting...")
-        Thread.sleep(5_000)
-        println("Done !!!")
     }
 
     private fun arrays() {
@@ -124,11 +124,37 @@ class MainActivity : ComponentActivity() {
         println("Level: ${LevelPrinter.toString(Level.low)}")
     }
 
+    private fun enumsWithAssociatedVals() {
+        val msg = when (val res = Network.requestError()) {
+            is NetworkResult.success -> "Success: "
+            is NetworkResult.error -> "Error(${res.code}): ${res.message}"
+            NetworkResult.loading -> "Loading"
+        }
+
+        println(msg)
+    }
+
     private fun vars() {
-        val player = Player("Player1")
-        println(player.name)
-        player.name = "Player2"
-        println(player.name)
+        val vars = Vars(20)
+
+        vars.x += 10
+
+        println("X: ${vars.x}")
+        println("Y: ${vars.y}")
+        println("Z: ${vars.z}")
+
+        vars.u += 10
+
+        println("U: ${vars.u}")
+        println("U: ${vars.v}")
+    }
+
+    private fun exceptions() {
+        try {
+            ThrowingStruct.callAndThrow()
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 
     private suspend fun observation(): List<Long> {
@@ -161,6 +187,22 @@ class MainActivity : ComponentActivity() {
         completable.await()
         return values
     }
+
+    private suspend fun async() {
+        val async = Async()
+        async.exec().await()
+    }
+
+    private fun foundation() {
+        println("---------- Date -----------")
+        val date = swift4j_examples.Date_example()
+        println("Now is: ${date.now}")
+
+        println("\n---------- Result ---------")
+        val res = swift4j_examples.Result_example()
+        val resVal = res.doWithSuccess().getOrElse { it.toString() }
+        println("Result is: $resVal")
+    }
 }
 
 data class TestResult(
@@ -171,14 +213,15 @@ data class TestResult(
 
 @Composable
 fun TestResultsScreen(results: List<TestResult>, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize(),
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("Test Results", style = MaterialTheme.typography.headlineSmall)
-        for (result in results) {
+        item {
+            Text("Test Results", style = MaterialTheme.typography.headlineSmall)
+        }
+        items(results) { result ->
             TestResultRow(result)
         }
     }

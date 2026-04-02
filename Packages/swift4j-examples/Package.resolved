@@ -1,13 +1,13 @@
 {
-  "originHash" : "552c44866be98335f197bcddd9eaf67309d64c43decc87800b1c23f2e5e4d164",
+  "originHash" : "aded56a77b1de102555b159fc8c75464de788e41d09ac37691097b1031e153c5",
   "pins" : [
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
-        "revision" : "cdd0ef3755280949551dc26dee5de9ddeda89f54",
-        "version" : "1.6.2"
+        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
+        "version" : "1.7.1"
       }
     },
     {
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
+      }
+    },
+    {
+      "identity" : "swift4j",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/scade-platform/swift4j.git",
+      "state" : {
+        "revision" : "18615f614f5f3aa70b55f9fe658befe3c3abcc92",
+        "version" : "1.4.0"
       }
     }
   ],

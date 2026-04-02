@@ -2,7 +2,7 @@ plugins {
     java
     application
     kotlin("jvm") version "2.0.10"
-    id("io.scade.gradle.plugins.swiftpm") version "1.3.0"
+    id("io.scade.gradle.plugins.swiftpm") version "latest.release"
 }
 
 group = "org.swift.examples.kotlin"
@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 }
 
 tasks.test {
@@ -26,7 +27,7 @@ kotlin {
 }
 
 application {
-    mainClass = "org.swift.examples.MainKt"
+    mainClass = "MainKt"
 }
 
 swiftpm {

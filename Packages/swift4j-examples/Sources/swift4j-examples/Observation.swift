@@ -3,8 +3,6 @@ import Observation
 import Swift4j
 
 
-
-
 @jvm
 @Observable
 public final class ObservableClass {
