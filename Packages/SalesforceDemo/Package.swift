@@ -21,17 +21,24 @@ let package = Package(
             .package(url: "https://github.com/scade-platform/swift4j.git", branch: "main")
         ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "SalesforceDemo",
             dependencies: [
-                          .product(name: "Swift4j", package: "swift4j")
-                        ]
+                .product(name: "Swift4j", package: "swift4j")
+            ]
+        ),
+        .executableTarget(
+            name: "GenerateTestCredentialsTool"
+        ),
+        .plugin(
+            name: "GenerateTestCredentials",
+            capability: .buildTool(),
+            dependencies: ["GenerateTestCredentialsTool"]
         ),
         .testTarget(
             name: "SalesforceDemoTests",
-            dependencies: ["SalesforceDemo"]
+            dependencies: ["SalesforceDemo"],
+            plugins: [.plugin(name: "GenerateTestCredentials")]
         ),
     ]
 )

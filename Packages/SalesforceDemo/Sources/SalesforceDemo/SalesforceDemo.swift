@@ -65,15 +65,25 @@ final class RequestResult: @unchecked Sendable {
 
 public final class SalesforceAPI {
 
-    private let clientId     = "client_id"
-    private let clientSecret = "client_secret"
+    private let clientId:     String
+    private let clientSecret: String
+    private let baseDomain:   String
+    private let apiVersion  = "v65.0"
 
-    private let baseDomain   = "orgfarm-c4ae2aaf32-dev-ed.develop.my.salesforce.com"
-    private let apiVersion   = "v65.0"
-
-    public init() {}
+    public init(clientId: String, clientSecret: String, baseDomain: String) {
+        self.clientId     = clientId
+        self.clientSecret = clientSecret
+        self.baseDomain   = baseDomain
+    }
 
     public func loadAccounts() async throws -> [Account] {
+        guard !clientId.isEmpty, !clientSecret.isEmpty, !baseDomain.isEmpty else {
+            throw NSError(
+                domain: "SalesforceAPI",
+                code: -2,
+                userInfo: [NSLocalizedDescriptionKey: "clientId, clientSecret, and baseDomain must not be empty"]
+            )
+        }
         let token = try await fetchAccessToken()
         let response = try await fetchAccounts(accessToken: token)
         return response.records
@@ -171,9 +181,11 @@ public final class SalesforceAPI {
 
 @jvm
 public final class SalesforceBridge {
-    let api = SalesforceAPI()
+    private let api: SalesforceAPI
 
-    public init() {}
+    public init(clientId: String, clientSecret: String, baseDomain: String) {
+        self.api = SalesforceAPI(clientId: clientId, clientSecret: clientSecret, baseDomain: baseDomain)
+    }
 
     public func loadAccounts(callback: ([Account]) -> Void) async {
         do {

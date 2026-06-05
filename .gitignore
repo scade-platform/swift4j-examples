@@ -4,6 +4,12 @@
 # Swift Package Manager
 Package.resolved
 
+# IDE
+.vscode
+
+# Test output
+test-run/
+
 # Compiled class file
 *.class
 

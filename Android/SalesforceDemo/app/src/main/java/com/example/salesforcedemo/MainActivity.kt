@@ -37,7 +37,11 @@ fun AccountsScreen(modifier: Modifier = Modifier) {
 
     LaunchedEffect(Unit) {
         try {
-            val bridge = SalesforceBridge()
+            val bridge = SalesforceBridge(
+                BuildConfig.SF_CLIENT_ID,
+                BuildConfig.SF_CLIENT_SECRET,
+                BuildConfig.SF_BASE_DOMAIN
+            )
             val result = bridge.loadAccounts() { accounts ->
                 text = accounts.joinToString("\n") { it.name }
             }

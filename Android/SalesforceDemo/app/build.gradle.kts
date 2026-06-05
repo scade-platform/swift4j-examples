@@ -1,9 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
     id("io.scade.gradle.plugins.android.swiftpm") version "latest.release"
+}
+
+val localProps = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -18,6 +24,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "SF_CLIENT_ID",     "\"${localProps["salesforce.clientId"]}\"")
+        buildConfigField("String", "SF_CLIENT_SECRET", "\"${localProps["salesforce.clientSecret"]}\"")
+        buildConfigField("String", "SF_BASE_DOMAIN",   "\"${localProps["salesforce.baseDomain"]}\"")
     }
 
     buildTypes {
@@ -38,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
