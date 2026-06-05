@@ -63,7 +63,7 @@ dependencies {
 
 swiftpm {
     product = "SimpleDB"
-    path = file("../../../Packages/SimpleDB")
+    path = file("../../Packages/SimpleDB")
     javaVersion = 8
 
     dependencies {

@@ -72,7 +72,7 @@ dependencies {
 }
 
 swiftpm {
-    path = file("../../../Packages/SalesforceDemo")
+    path = file("../../Packages/SalesforceDemo")
     product = "SalesforceDemo"
     javaVersion = 8
     scdAutoUpdate = true

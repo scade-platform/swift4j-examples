@@ -61,7 +61,7 @@ dependencies {
 }
 
 swiftpm {
-    path = file("../../../Packages/ObservationDemo")
+    path = file("../../Packages/ObservationDemo")
     product = "ObservationDemo"
     javaVersion = 8
     scdAutoUpdate = true

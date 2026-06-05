@@ -21,7 +21,7 @@ let package = Package(
       .package(url: "https://github.com/scade-platform/swift4j.git", branch: "main"),
       .package(url: "https://github.com/scade-platform/GRDB.swift.git", branch: "android_support")
       //.package(url: "https://github.com/groue/GRDB.swift.git", exact: "7.1.0")
-      //.package(path: "../../../swift4j")
+      //.package(path: "../../../../swift4j")
     ],
     targets: [
         .target(

@@ -31,7 +31,7 @@ application {
 }
 
 swiftpm {
-    path = file("../../Packages/swift4j-examples")
+    path = file("../Packages/swift4j-examples")
     product = "swift4j-examples"
     scdAutoUpdate = true
 }

@@ -24,7 +24,7 @@ let package = Package(
       .package(url: "https://github.com/scade-platform/swift4j.git", branch: "main"),
       .package(url: "https://github.com/scade-platform/SwiftyJSON.git", revision: "3594d05"),
       .package(url: "https://github.com/Alamofire/Alamofire.git", from: "5.10.2")
-      //.package(path: "../../../swift4j")
+      //.package(path: "../../../../swift4j")
     ],
 
     targets: [

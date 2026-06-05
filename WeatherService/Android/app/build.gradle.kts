@@ -74,7 +74,7 @@ dependencies {
 
 
 swiftpm {
-    path = file("../../../Packages/WeatherService")
+    path = file("../../Packages/WeatherService")
     product = "WeatherService"
     javaVersion = 8
     scdAutoUpdate = true
