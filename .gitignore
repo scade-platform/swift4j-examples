@@ -3,6 +3,21 @@
 
 # Swift Package Manager
 Package.resolved
+.build/
+.swiftpm/
+
+# Gradle
+.gradle/
+.kotlin/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Android / IDE
+.idea/
+*.iml
+local.properties
 
 # IDE
 .vscode
