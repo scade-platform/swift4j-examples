@@ -1,39 +1,50 @@
 # Swift4j Toolkit Examples
 
-The repository contains ready to build usage examples for the [Swift4j Toolkit](https://github.com/scade-platform/swift4j.git). To build any example just clone the repository and follow intstructions below.
+The repository contains ready to build usage examples for the [Swift4j Toolkit](https://github.com/scade-platform/swift4j.git).
 
-## Description
+## Structure
 
-The repository is strcutured as following:
+Each example is self-contained in its own directory:
 
-- **Packages**: contain Swift packages that export classes using the [swift4j](https://github.com/scade-platform/swift4j.git) package that are used in example applications
-
-- **Kotlin**: example applications written in Kotlin
-
-- **Android**: Android applications
-
-## Getting Started
-
-### Prerequisites
-
-- [Swift4j Prerequisites](https://github.com/scade-platform/swift4j.git#Prerequisites)
-
-- Kotlin
-	- Gradle >= 8.5
-
-- Android
-	- Android Studio Ladybug (earlier version may work as well)
-
-### Usage
-
-#### Kotlin
-
-Just navigate to an example folder inside the `Kotlin` folder and execute:
-
-```shell
-./gradlew run
+```
+<ExampleName>/
+├── Packages/<ExampleName>/   # Swift source
+├── Android/                  # Android app
+└── Kotlin/                   # Kotlin app (where applicable)
 ```
 
-#### Android
+### Examples
 
-Open an example folder located in the `Android` folder in the Android Studio, then build or run the app.
+| Directory | Description |
+|-----------|-------------|
+| `SalesforceDemo` | Fetch Salesforce accounts using OAuth2 client credentials — see [SalesforceDemo/README.md](SalesforceDemo/README.md) for configuration |
+| `WeatherService` | Weather data service |
+| `SimpleDB` | SQLite database access via GRDB |
+| `ObservationDemo` | Swift Observation framework |
+| `swift4j-examples` | General swift4j usage examples |
+
+## Prerequisites
+
+- [Swift4j Prerequisites](https://github.com/scade-platform/swift4j.git#Prerequisites)
+- Gradle >= 8.5
+- Android Studio Ladybug or later
+
+## Building
+
+### Android
+
+Build from the command line:
+
+```bash
+cd <ExampleName>/Android
+gradle assembleDebug
+```
+
+Or open the `<ExampleName>/Android` directory in Android Studio.
+
+### Kotlin
+
+```bash
+cd <ExampleName>/Kotlin
+./gradlew run
+```
