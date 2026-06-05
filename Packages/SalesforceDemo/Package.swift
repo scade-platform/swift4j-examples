@@ -18,7 +18,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-            .package(url: "https://github.com/scade-platform/swift4j.git", from: "1.3.1")
+            .package(url: "https://github.com/scade-platform/swift4j.git", branch: "main")
         ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
