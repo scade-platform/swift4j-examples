@@ -1,7 +1,30 @@
 import Foundation
 import Swift4j
 import Dispatch
+
+#if canImport(os)
 import os
+#endif
+
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
+#if canImport(Android)
+import Android
+#endif
+
+private func log(_ message: String) {
+    #if canImport(os)
+    os_log("%@", message)
+    #elseif canImport(Android)
+    message.withCString { cStr in
+        _ = __android_log_write(4, "SalesforceDemo", cStr)
+    }
+    #else
+    print(message)
+    #endif
+}
 
 // MARK: - Models
 
@@ -15,7 +38,7 @@ public struct Account: Identifiable, Codable {
     public let name: String
     public let accountNumber: String?
     public let type: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case id = "Id"
         case name = "Name"
@@ -41,32 +64,32 @@ final class RequestResult: @unchecked Sendable {
 // MARK: - Salesforce API Client (pure Swift, no @jvm)
 
 public final class SalesforceAPI {
-    
+
     private let clientId     = "client_id"
     private let clientSecret = "client_secret"
-    
+
     private let baseDomain   = "orgfarm-c4ae2aaf32-dev-ed.develop.my.salesforce.com"
     private let apiVersion   = "v65.0"
-    
+
     public init() {}
-    
+
     public func loadAccounts() async throws -> [Account] {
         let token = try await fetchAccessToken()
         let response = try await fetchAccounts(accessToken: token)
         return response.records
     }
-    
+
     // MARK: - HTTP Helper
-    
+
     private func performRequest(_ request: URLRequest) async throws -> Data {
-        os_log("performRequest start");
+        log("performRequest start")
 
-        let (data, response) = try await URLSession.shared.data(for: request);
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-        os_log("performRequest request completed");
+        log("performRequest request completed")
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            os_log("performRequest response is not a HTTPURLResponse");
+            log("performRequest response is not a HTTPURLResponse")
 
             throw NSError(
                 domain: "AccountsError",
@@ -77,7 +100,7 @@ public final class SalesforceAPI {
 
         guard 200..<300 ~= httpResponse.statusCode else {
             let text = String(data: data, encoding: .utf8) ?? ""
-            os_log("performRequest received bad status code: \(httpResponse.statusCode), error: \(text)");
+            log("performRequest received bad status code: \(httpResponse.statusCode), error: \(text)")
 
             throw NSError(
                 domain: "AccountsError",
@@ -86,26 +109,26 @@ public final class SalesforceAPI {
             )
         }
 
-        os_log("performRequest finished");
-        
+        log("performRequest finished")
+
         return data
     }
-    
+
     // MARK: - Token
-    
+
     private func fetchAccessToken() async throws -> String {
         var components = URLComponents()
         components.scheme = "https"
         components.host = baseDomain
         components.path = "/services/oauth2/token"
-        
+
         guard let url = components.url else {
             throw URLError(.badURL)
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        
+
         var body = URLComponents()
         body.queryItems = [
             .init(name: "grant_type", value: "client_credentials"),
@@ -119,9 +142,9 @@ public final class SalesforceAPI {
         let data = try await performRequest(request)
         return try JSONDecoder().decode(TokenResponse.self, from: data).access_token
     }
-    
+
     // MARK: - Accounts
-    
+
     private func fetchAccounts(accessToken: String) async throws -> AccountsQueryResponse {
         var components = URLComponents()
         components.scheme = "https"
@@ -130,15 +153,15 @@ public final class SalesforceAPI {
         components.queryItems = [
             .init(name: "q", value: "SELECT Id, Name, AccountNumber, Type FROM Account")
         ]
-        
+
         guard let url = components.url else {
             throw URLError(.badURL)
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        
+
         let data = try await performRequest(request)
         return try JSONDecoder().decode(AccountsQueryResponse.self, from: data)
     }
@@ -149,19 +172,19 @@ public final class SalesforceAPI {
 @jvm
 public final class SalesforceBridge {
     let api = SalesforceAPI()
-    
+
     public init() {}
 
     public func loadAccounts(callback: ([Account]) -> Void) async {
         do {
-            os_log("loadAccounts started")
+            log("loadAccounts started")
             let accounts = try await api.loadAccounts()
-            os_log("loadAccounts received accounts: \(accounts)")
+            log("loadAccounts received accounts: \(accounts)")
             callback(accounts)
-            os_log("loadAccounts completed")
+            log("loadAccounts completed")
         }
         catch {
-            os_log("loadAccounts error: \(error)")
+            log("loadAccounts error: \(error)")
             callback([])
         }
     }
